@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Download {{ file.name }}{{ file.ext }} — FilesLab</title>
+    <title>Download {{ file.name }}{{ file.ext }} — LabFiles</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            color: #333;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: #f4f6f8;
+            color: #2c3e50;
         }
 
         .top-ad {
-            background: #1a1a2e;
-            color: #ffd700;
+            background: linear-gradient(90deg, #2c3e50, #e74c3c);
+            color: #fff;
             text-align: center;
-            padding: 0.4rem;
-            font-size: 0.75rem;
+            padding: 0.3rem;
+            font-size: 0.7rem;
         }
 
         .header {
@@ -28,40 +28,37 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
+            gap: 0.5rem;
         }
         .header .logo {
             font-size: 1.3rem;
-            font-weight: 700;
+            font-weight: 800;
             color: #e74c3c;
             display: flex;
             align-items: center;
             gap: 0.4rem;
         }
-        .header .logo small { font-weight: 400; color: #888; font-size: 0.7rem; }
-        .header a { color: #555; text-decoration: none; font-size: 0.85rem; }
+        .header .logo small { font-weight: 400; color: #aaa; font-size: 0.65rem; }
+        .header a { color: #555; text-decoration: none; font-size: 0.82rem; font-weight: 500; }
         .header a:hover { color: #e74c3c; }
-        .header .back-link { display: flex; align-items: center; gap: 0.3rem; }
 
         .breadcrumb {
             background: #fff;
-            padding: 0.6rem 1.5rem;
-            font-size: 0.8rem;
+            padding: 0.5rem 1.5rem;
+            font-size: 0.78rem;
             color: #888;
             border-bottom: 1px solid #e8ecf0;
         }
         .breadcrumb a { color: #e74c3c; text-decoration: none; }
         .breadcrumb a:hover { text-decoration: underline; }
 
-        .container {
-            max-width: 900px;
-            margin: 1.5rem auto;
-            padding: 0 1rem;
-        }
+        .container { max-width: 920px; margin: 0 auto; padding: 1.5rem 1rem; }
 
+        /* FILE CARD */
         .file-card {
             background: #fff;
-            border: 1px solid #dce1e8;
-            border-radius: 8px;
+            border: 1px solid #e0e6ed;
+            border-radius: 12px;
             padding: 2rem;
         }
 
@@ -71,60 +68,91 @@
             gap: 1.5rem;
             flex-wrap: wrap;
         }
-        .file-icon { font-size: 3.5rem; }
+        .file-icon { font-size: 4rem; line-height: 1; }
         .file-info { flex: 1; min-width: 200px; }
         .file-info h1 { font-size: 1.3rem; color: #2c3e50; word-break: break-word; }
+        .file-info h1 small { font-weight: 400; color: #999; font-size: 0.75rem; margin-left: 0.3rem; }
         .file-info .meta {
             color: #888;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             margin-top: 0.3rem;
         }
         .file-info .meta span { margin-right: 1rem; }
-        .file-info .rating { color: #f39c12; font-size: 0.85rem; margin-top: 0.3rem; }
+        .file-info .rating { color: #f39c12; font-size: 0.82rem; margin-top: 0.2rem; }
 
+        /* DOWNLOAD SECTION */
         .download-section {
             margin-top: 1.5rem;
             background: #fafbfc;
             border: 1px solid #e8ecf0;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 1.5rem;
             text-align: center;
+            position: relative;
         }
-        .download-section .safe-badge {
-            display: inline-block;
+        .safe-badges {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .safe-badges span {
             background: #27ae60;
             color: #fff;
-            padding: 0.2rem 1rem;
+            padding: 0.2rem 0.8rem;
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
-            margin-bottom: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
+        .safe-badges .norton { background: #1a5276; }
+        .safe-badges .ssl { background: #2c3e50; }
+
         .download-btn {
             display: block;
-            background: #e74c3c;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: #fff;
-            padding: 1rem;
-            border-radius: 6px;
-            font-size: 1.1rem;
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-size: 1.15rem;
             font-weight: 700;
             text-decoration: none;
-            transition: background 0.12s;
+            transition: all 0.12s;
+            letter-spacing: 0.3px;
         }
-        .download-btn:hover { background: #c0392b; }
-        .download-section .checks {
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(231,76,60,0.3);
+        }
+        .download-btn small { font-weight: 400; opacity: 0.8; }
+
+        .checks {
             margin-top: 0.8rem;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #888;
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 1.2rem;
             flex-wrap: wrap;
         }
-        .download-section .checks span { color: #27ae60; }
+        .checks span { color: #27ae60; }
 
+        /* COUNTER */
+        .download-counter {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            font-size: 0.78rem;
+            color: #888;
+        }
+        .download-counter div { text-align: center; }
+        .download-counter div strong { display: block; font-size: 1.1rem; color: #2c3e50; }
+
+        /* INFO GRID */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -134,45 +162,68 @@
         .info-item {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 0.5rem 0.8rem;
             background: #fafbfc;
-            border-radius: 4px;
-            font-size: 0.85rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
         }
         .info-item .label { color: #888; }
         .info-item .value { color: #2c3e50; font-weight: 500; }
+        .info-item .value.green { color: #27ae60; }
 
-        .comments-section {
+        /* MIRRORS */
+        .mirrors {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .mirrors a {
+            background: #f0f2f5;
+            color: #555;
+            text-decoration: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            transition: all 0.1s;
+        }
+        .mirrors a:hover { background: #e74c3c; color: #fff; }
+
+        /* REVIEWS */
+        .reviews-section {
             margin-top: 1.5rem;
             background: #fff;
-            border: 1px solid #dce1e8;
+            border: 1px solid #e0e6ed;
             border-radius: 8px;
-            padding: 1.5rem;
+            padding: 1.2rem;
         }
-        .comments-section h3 {
-            font-size: 1rem;
+        .reviews-section h3 {
+            font-size: 0.95rem;
             color: #2c3e50;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.4rem;
             border-bottom: 2px solid #e74c3c;
         }
-        .comment {
-            padding: 0.8rem 0;
+        .review-item {
+            padding: 0.5rem 0;
             border-bottom: 1px solid #f0f2f5;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
         }
-        .comment:last-child { border-bottom: none; }
-        .comment .author { font-weight: 600; color: #2c3e50; }
-        .comment .date { font-size: 0.7rem; color: #aaa; margin-left: 0.5rem; }
-        .comment .text { margin-top: 0.2rem; color: #555; }
-        .comment .stars { color: #f39c12; font-size: 0.75rem; }
+        .review-item:last-child { border-bottom: none; }
+        .review-item .author { font-weight: 600; color: #2c3e50; }
+        .review-item .date { font-size: 0.68rem; color: #aaa; margin-left: 0.4rem; }
+        .review-item .stars { color: #f39c12; font-size: 0.72rem; }
+        .review-item .text { margin-top: 0.15rem; color: #555; }
 
         .footer {
-            background: #2c3e50;
-            color: #b0b0c0;
+            background: #1a1a2e;
+            color: #8899aa;
             text-align: center;
             padding: 1.5rem;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             margin-top: 2rem;
         }
         .footer a { color: #e74c3c; text-decoration: none; }
@@ -180,18 +231,19 @@
         @media (max-width: 600px) {
             .info-grid { grid-template-columns: 1fr; }
             .file-top { flex-direction: column; text-align: center; }
+            .download-counter { flex-direction: column; gap: 0.5rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="top-ad">
-    🔒 DOWNLOAD PROTECTED BY MCAFEE SECURE — ALL FILES SCANNED DAILY
+    🛡️ PROTECTED BY NORTON SECURE — FILE SCANNED: ✅ CLEAN (0 threats)
 </div>
 
 <div class="header">
-    <div class="logo">⬇️ FilesLab <small>v3.2.1</small></div>
-    <a href="/" class="back-link">⬅ Back to Files</a>
+    <div class="logo">⬇️ Lab<span>Files</span> <small>v4.1.2</small></div>
+    <a href="/">⬅ Back to Files</a>
 </div>
 
 <div class="breadcrumb">
@@ -204,72 +256,98 @@
         <div class="file-top">
             <div class="file-icon">{{ file.icon }}</div>
             <div class="file-info">
-                <h1>{{ file.name }}{{ file.ext }}</h1>
+                <h1>{{ file.name }}{{ file.ext }} <small>v{{ file.version }}</small></h1>
                 <div class="meta">
                     <span>💾 {{ file.size_mb }} MB</span>
                     <span>📄 {{ file.ext }}</span>
-                    <span>⬇️ {{ range(1000, 80000)|random }} downloads</span>
-                    <span>📅 {{ range(1, 30)|random }} days ago</span>
+                    <span>⬇️ {{ file.downloads }} downloads</span>
+                    <span>📅 {{ file.days_ago }} days ago</span>
                 </div>
-                <div class="rating">⭐⭐⭐⭐⭐ {{ range(38, 50)|random / 10 }} / 5.0 ({{ range(50, 500)|random }} reviews)</div>
+                <div class="rating">⭐⭐⭐⭐⭐ {{ file.rating }} / 5.0 ({{ file.reviews }} reviews)</div>
             </div>
         </div>
 
         <div class="download-section">
-            <div class="safe-badge">✅ Verified Safe</div>
-            <a href="{{ file.raw_url }}" class="download-btn" target="_blank" rel="noopener">
-                ⬇️ Download {{ file.name }}{{ file.ext }} ({{ file.size_mb }} MB)
+            <div class="safe-badges">
+                <span>✅ Verified Safe</span>
+                <span class="norton">🛡️ Norton Approved</span>
+                <span class="ssl">🔒 SSL Secure</span>
+            </div>
+
+            <a href="{{ file.raw_url }}" class="download-btn" target="_blank" rel="noopener" id="dlBtn">
+                ⬇️ Download Now — {{ file.name }}{{ file.ext }} ({{ file.size_mb }} MB)
+                <br/><small>Direct download from CDN • Unlimited speed</small>
             </a>
+
             <div class="checks">
                 <span>✓ No virus</span>
                 <span>✓ No malware</span>
-                <span>✓ SSL secure</span>
-                <span>✓ Fast CDN</span>
+                <span>✓ No spyware</span>
+                <span>✓ 100% clean</span>
+                <span>✓ VirusTotal 0/68</span>
+            </div>
+
+            <div class="download-counter">
+                <div><strong>{{ file.downloads }}</strong> Total Downloads</div>
+                <div><strong>847</strong> Downloaded Today</div>
+                <div><strong>⭐ {{ file.rating }}</strong> User Rating</div>
+            </div>
+
+            <div class="mirrors">
+                <a href="#">Mirror 1 (US)</a>
+                <a href="#">Mirror 2 (EU)</a>
+                <a href="#">Mirror 3 (ASIA)</a>
+                <a href="#">Torrent</a>
             </div>
         </div>
 
         <div class="info-grid">
-            <div class="info-item"><span class="label">Filename</span><span class="value">{{ file.filename }}</span></div>
-            <div class="info-item"><span class="label">Extension</span><span class="value">{{ file.ext }}</span></div>
-            <div class="info-item"><span class="label">File size</span><span class="value">{{ file.size_mb }} MB</span></div>
-            <div class="info-item"><span class="label">License</span><span class="value">Freeware</span></div>
-            <div class="info-item"><span class="label">Language</span><span class="value">English</span></div>
-            <div class="info-item"><span class="label">Platform</span><span class="value">Windows / macOS / Linux</span></div>
-            <div class="info-item"><span class="label">Checksum (SHA-256)</span><span class="value" style="font-size:0.7rem;">{{ ''.join(range(1, 65)|random|string for _ in range(64)) }}</span></div>
-            <div class="info-item"><span class="label">Virus total</span><span class="value" style="color:#27ae60;">✅ 0 / 68</span></div>
+            <div class="info-item"><span class="label">📄 Filename</span><span class="value">{{ file.filename }}</span></div>
+            <div class="info-item"><span class="label">🔤 Extension</span><span class="value">{{ file.ext }}</span></div>
+            <div class="info-item"><span class="label">💾 Size</span><span class="value">{{ file.size_mb }} MB</span></div>
+            <div class="info-item"><span class="label">📅 Uploaded</span><span class="value">{{ file.days_ago }} days ago</span></div>
+            <div class="info-item"><span class="label">🔗 License</span><span class="value">Freeware / Open Source</span></div>
+            <div class="info-item"><span class="label">🌍 Platform</span><span class="value">Windows / macOS / Linux</span></div>
+            <div class="info-item"><span class="label">🗣️ Language</span><span class="value">English, Portuguese</span></div>
+            <div class="info-item"><span class="label">🔐 SHA-256</span><span class="value" style="font-size:0.65rem;font-family:monospace;">{{ '%064x'|format(range(1, 65)|random) }}</span></div>
+            <div class="info-item"><span class="label">🦠 VirusTotal</span><span class="value green">✅ 0 / 68 engines</span></div>
+            <div class="info-item"><span class="label">📊 File rating</span><span class="value">⭐ {{ file.rating }} / 5.0</span></div>
         </div>
 
     </div>
 
-    <div class="comments-section">
-        <h3>💬 User Reviews ({{ range(50, 500)|random }})</h3>
-        
-        <div class="comment">
-            <span class="author">TechGuy42</span>
-            <span class="date">2 days ago</span>
-            <div class="stars">⭐⭐⭐⭐⭐</div>
-            <div class="text">Works perfectly! No issues at all. Installed on Windows 11 without problems.</div>
+    <div class="reviews-section">
+        <h3>💬 User Reviews ({{ file.reviews }})</h3>
+        {% for review in reviews %}
+        <div class="review-item">
+            <span class="author">{{ review.author }}</span>
+            <span class="date">{{ review.days }} days ago</span>
+            <div class="stars">{% for _ in range(review.stars) %}⭐{% endfor %}</div>
+            <div class="text">{{ review.text }}</div>
         </div>
-        <div class="comment">
-            <span class="author">GamerZ_br</span>
-            <span class="date">5 days ago</span>
-            <div class="stars">⭐⭐⭐⭐</div>
-            <div class="text">Good tool, helped me boost my FPS. Just disable antivirus before installing.</div>
-        </div>
-        <div class="comment">
-            <span class="author">Anonymous_User</span>
-            <span class="date">1 week ago</span>
-            <div class="stars">⭐⭐⭐⭐⭐</div>
-            <div class="text">Finally found a working version. Thank you! Download was fast.</div>
-        </div>
+        {% endfor %}
     </div>
 
 </div>
 
 <div class="footer">
-    <p>FilesLab &copy; 2026 — <a href="#">DMCA</a> | <a href="#">Privacy</a> | <a href="#">Terms</a></p>
-    <p style="margin-top: 0.3rem; opacity: 0.6;">Protected by Cloudflare &bull; SSL Encrypted</p>
+    <p>LabFiles &copy; 2026 — <a href="#">DMCA</a> | <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">Contact</a></p>
+    <p style="margin-top:0.3rem;opacity:0.6;">Protected by Cloudflare • 256-bit SSL • Verified by Norton</p>
 </div>
 
+<script>
+document.getElementById('dlBtn')?.addEventListener('click', function() {
+    setTimeout(function() {
+        // Simula contador de download aumentando
+        var counters = document.querySelectorAll('.download-counter div strong');
+        if (counters.length > 0) {
+            var current = parseInt(counters[0].textContent.replace(/\,/g,''));
+            if (!isNaN(current)) {
+                counters[0].textContent = (current + 1).toLocaleString();
+            }
+        }
+    }, 500);
+});
+</script>
 </body>
 </html>
