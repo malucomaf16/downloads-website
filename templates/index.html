@@ -31,24 +31,27 @@
             padding: 1.2rem; transition: border-color 0.2s, transform 0.15s; cursor: pointer;
         }
         .card:hover { border-color: #58a6ff; transform: translateY(-2px); }
-        .card-icon { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .card-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
         .card h3 { font-size: 1.05rem; color: #f0f6fc; word-break: break-word; }
         .card .meta { color: #8b949e; font-size: 0.85rem; margin-top: 0.4rem; }
         .card .meta span { margin-right: 1rem; }
-        .card .download-btn {
+        .download-btn {
             display: inline-block; margin-top: 0.8rem;
             background: #238636; color: #fff; padding: 0.4rem 1rem;
             border-radius: 6px; font-size: 0.85rem; font-weight: 600;
             text-decoration: none; transition: background 0.2s;
         }
-        .card .download-btn:hover { background: #2ea043; }
+        .download-btn:hover { background: #2ea043; }
+        .no-files {
+            text-align: center; padding: 3rem; color: #8b949e;
+        }
+        .no-files p { font-size: 1.1rem; }
         .footer { text-align: center; padding: 2rem; color: #8b949e; font-size: 0.85rem; border-top: 1px solid #21262d; }
         .alert {
             background: #1c2128; border: 1px solid #30363d; border-radius: 8px;
             padding: 1rem; text-align: center; margin-bottom: 2rem;
         }
         .alert p { color: #8b949e; font-size: 0.9rem; }
-        @media (max-width: 600px) { .stats { flex-direction: column; gap: 0.3rem; } }
     </style>
 </head>
 <body>
@@ -68,13 +71,19 @@
         <p>⚠️ Some files may be flagged by antivirus. Temporarily disable Defender for best results.</p>
     </div>
 
+    {% if total_files == 0 %}
+    <div class="no-files">
+        <p>📭 No files available yet. Check back soon!</p>
+    </div>
+    {% endif %}
+
     {% for category, files in categories.items() %}
     <div class="category">
         <h2>{{ category }} ({{ files|length }})</h2>
         <div class="grid">
             {% for file in files %}
             <div class="card" onclick="location.href='/download/{{ file.filename }}'">
-                <div class="card-icon">{{ file.icon if file.icon else (''.join(__import__('unicodedata').lookup(s) for s in [])) }}{{ {'exe':'⚙️','msi':'⚙️','dll':'🔧','zip':'📦','rar':'📦','7z':'📦','jpg':'🖼️','jpeg':'🖼️','png':'🖼️','gif':'🖼️','pdf':'📄','txt':'📄','mp3':'🎵','mp4':'🎬','iso':'💿','apk':'📱','dmg':'💻','py':'🐍','html':'🌐'}.get(file.ext.lower().replace('.',''), '📁') }}</div>
+                <div class="card-icon">{{ file.icon }}</div>
                 <h3>{{ file.name }}{{ file.ext }}</h3>
                 <div class="meta">
                     <span>💾 {{ file.size_mb }} MB</span>
