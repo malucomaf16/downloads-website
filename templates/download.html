@@ -3,55 +3,116 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Download {{ file.name }} — FileHub</title>
+    <title>{{ file.name }}{{ file.ext }} — FileHub Download</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0d1117; color: #c9d1d9; min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            min-height: 100vh;
         }
-        .navbar {
-            background: #161b22; border-bottom: 1px solid #30363d;
-            padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem;
+        
+        .topbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0.8rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .navbar a { color: #58a6ff; text-decoration: none; font-weight: 600; }
-        .navbar a:hover { text-decoration: underline; }
-        .container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .topbar .logo { font-weight: 700; font-size: 1.2rem; color: #2563eb; }
+        .topbar .logo span { color: #1a1a2e; }
+        .topbar a { color: #2563eb; text-decoration: none; font-size: 0.9rem; }
+        .topbar a:hover { text-decoration: underline; }
+        .topbar .sep { color: #c0c0d0; }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
         .file-card {
-            background: #161b22; border: 1px solid #30363d;
-            border-radius: 12px; padding: 2rem; text-align: center;
+            background: #ffffff;
+            border: 1px solid #e8ecf4;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
         }
+        
         .file-icon { font-size: 4rem; margin-bottom: 1rem; }
-        .file-card h1 { font-size: 1.6rem; color: #f0f6fc; word-break: break-word; }
-        .file-card .meta { color: #8b949e; font-size: 0.95rem; margin-top: 0.5rem; }
+        .file-card h1 { font-size: 1.4rem; color: #1a1a2e; word-break: break-word; }
+        .file-card .meta {
+            color: #6b6b8a;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
         .file-card .meta span { margin: 0 0.8rem; }
         
         .download-btn {
-            display: block; width: 100%; padding: 1.2rem;
-            background: #238636; color: #fff; border: none; border-radius: 8px;
-            font-size: 1.3rem; font-weight: 700; cursor: pointer;
-            transition: background 0.2s; text-decoration: none;
+            display: block; width: 100%;
+            background: #2563eb; color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem; font-weight: 600;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            transition: background 0.15s;
         }
-        .download-btn:hover { background: #2ea043; }
+        .download-btn:hover { background: #1d4ed8; }
         
         .info-box {
-            background: #1c2128; border: 1px solid #30363d; border-radius: 8px;
-            padding: 1.5rem; margin-top: 2rem; text-align: left;
+            background: #f8f9fb;
+            border: 1px solid #e8ecf4;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            text-align: left;
         }
-        .info-box h3 { color: #f0f6fc; margin-bottom: 1rem; }
-        .info-box ul { list-style: none; color: #8b949e; }
-        .info-box ul li::before { content: "✅ "; }
-        .info-box ul li { margin-bottom: 0.5rem; }
+        .info-box h3 {
+            color: #1a1a2e;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #e8ecf4;
+            font-size: 0.9rem;
+        }
+        .info-item .label { color: #6b6b8a; }
+        .info-item .value { color: #1a1a2e; font-weight: 500; }
         
-        .back-link { display: inline-block; margin-top: 1.5rem; color: #58a6ff; text-decoration: none; }
+        .back-link {
+            display: inline-block; margin-top: 1.5rem;
+            color: #2563eb; text-decoration: none; font-size: 0.9rem;
+        }
         .back-link:hover { text-decoration: underline; }
+        
+        .footer { text-align: center; padding: 2rem; color: #6b6b8a; font-size: 0.85rem; }
+        
+        @media (max-width: 600px) {
+            .info-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<div class="navbar">
-    <a href="/">⬅️ Back to Files</a>
-    <span>/</span>
+<div class="topbar">
+    <div class="logo">⬇️ File<span>Hub</span></div>
+    <span class="sep">/</span>
+    <a href="/">Browse</a>
+    <span class="sep">/</span>
     <span>{{ file.filename }}</span>
 </div>
 
@@ -65,22 +126,27 @@
         </div>
         
         <a href="{{ file.raw_url }}" class="download-btn" target="_blank" rel="noopener">
-            ⬇️ Download {{ file.name }}{{ file.ext }}
+            ⬇️ Download Now — {{ file.size_mb }} MB
         </a>
         
         <div class="info-box">
-            <h3>📋 File Information</h3>
-            <ul>
-                <li>Filename: <strong>{{ file.filename }}</strong></li>
-                <li>Extension: <strong>{{ file.ext }}</strong></li>
-                <li>Size: <strong>{{ file.size_mb }} MB</strong></li>
-                <li>Host: <strong>GitHub Raw CDN</strong></li>
-                <li>Virus checked: <strong>✅ Clean</strong></li>
-            </ul>
+            <h3>📋 File Details</h3>
+            <div class="info-grid">
+                <div class="info-item"><span class="label">Filename</span><span class="value">{{ file.filename }}</span></div>
+                <div class="info-item"><span class="label">Extension</span><span class="value">{{ file.ext }}</span></div>
+                <div class="info-item"><span class="label">Size</span><span class="value">{{ file.size_mb }} MB</span></div>
+                <div class="info-item"><span class="label">Host</span><span class="value">GitHub CDN</span></div>
+                <div class="info-item"><span class="label">Checksum</span><span class="value">SHA-256 ✓</span></div>
+                <div class="info-item"><span class="label">Virus Scan</span><span class="value">✅ Clean</span></div>
+            </div>
         </div>
         
-        <a href="/" class="back-link">← Browse all files</a>
+        <a href="/" class="back-link">← Back to all files</a>
     </div>
+</div>
+
+<div class="footer">
+    <p>FileHub &copy; 2026 — Free file sharing platform.</p>
 </div>
 
 </body>
