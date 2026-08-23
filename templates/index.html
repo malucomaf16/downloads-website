@@ -3,179 +3,253 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FilesLab — Download software, games, drivers, and more</title>
+    <title>FileLab — Download Software, Games, Drivers, Documents &amp; Media</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            color: #333;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: #f4f6f8;
+            color: #2c3e50;
+            min-height: 100vh;
         }
 
-        /* === TOP BANNER AD === */
-        .top-ad {
+        /* ═══════════════════ TOP COOKIE BAR ═══════════════════ */
+        .cookie-bar {
             background: #1a1a2e;
-            color: #ffd700;
-            text-align: center;
-            padding: 0.4rem;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
+            color: #ccc;
+            padding: 0.6rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
-        .top-ad span { color: #888; }
+        .cookie-bar span { color: #ffd700; }
+        .cookie-bar a { color: #4fc3f7; text-decoration: none; }
+        .cookie-bar button {
+            background: #4fc3f7;
+            border: none;
+            color: #1a1a2e;
+            padding: 0.3rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.78rem;
+        }
 
-        /* === HEADER REAL === */
+        /* ═══════════════════ TOP AD ═══════════════════ */
+        .top-ad {
+            background: linear-gradient(90deg, #2c3e50, #e74c3c);
+            color: #fff;
+            text-align: center;
+            padding: 0.3rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.3px;
+        }
+        .top-ad span { opacity: 0.7; }
+
+        /* ═══════════════════ HEADER ═══════════════════ */
         .header {
             background: #fff;
             border-bottom: 1px solid #dce1e8;
-            padding: 0.8rem 1.5rem;
+            padding: 1rem 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.8rem;
         }
         .header .logo {
-            font-size: 1.3rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: 800;
             color: #e74c3c;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
         }
         .header .logo small {
             font-weight: 400;
-            color: #888;
+            color: #aaa;
             font-size: 0.7rem;
-            margin-left: 0.3rem;
+            background: #f0f2f5;
+            padding: 0.1rem 0.5rem;
+            border-radius: 4px;
         }
         .header .search-box {
             display: flex;
             align-items: center;
             background: #f0f2f5;
             border: 1px solid #dce1e8;
-            border-radius: 20px;
-            padding: 0.3rem 1rem;
+            border-radius: 24px;
+            padding: 0.3rem 1rem 0.3rem 1.2rem;
             flex: 1;
-            max-width: 400px;
+            max-width: 420px;
+            transition: all 0.15s;
+        }
+        .header .search-box:focus-within {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231,76,60,0.1);
         }
         .header .search-box input {
             border: none;
             background: transparent;
-            padding: 0.5rem;
+            padding: 0.5rem 0.3rem;
             width: 100%;
             outline: none;
             font-size: 0.85rem;
+            color: #2c3e50;
         }
+        .header .search-box input::placeholder { color: #aaa; }
         .header .search-box button {
             background: none;
             border: none;
             cursor: pointer;
             color: #888;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            padding: 0.3rem;
         }
-        .header .right-links {
+        .header .nav-links {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            font-size: 0.8rem;
+            gap: 1.2rem;
+            font-size: 0.82rem;
         }
-        .header .right-links a {
+        .header .nav-links a {
             color: #555;
             text-decoration: none;
+            font-weight: 500;
+            transition: color 0.12s;
         }
-        .header .right-links a:hover { color: #e74c3c; }
-        .header .right-links .upload-btn {
+        .header .nav-links a:hover { color: #e74c3c; }
+        .header .nav-links .upload-btn {
             background: #e74c3c;
-            color: #fff;
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px;
+            color: #fff !important;
+            padding: 0.35rem 0.9rem;
+            border-radius: 6px;
             font-weight: 600;
         }
-        .header .right-links .upload-btn:hover { background: #c0392b; color: #fff; }
+        .header .nav-links .upload-btn:hover { background: #c0392b; }
 
-        /* === BREADCRUMB === */
+        /* ═══════════════════ BREADCRUMB ═══════════════════ */
         .breadcrumb {
             background: #fff;
-            padding: 0.6rem 1.5rem;
-            font-size: 0.8rem;
+            padding: 0.5rem 1.5rem;
+            font-size: 0.78rem;
             color: #888;
             border-bottom: 1px solid #e8ecf0;
         }
         .breadcrumb a { color: #e74c3c; text-decoration: none; }
         .breadcrumb a:hover { text-decoration: underline; }
 
-        /* === HERO === */
+        /* ═══════════════════ HERO ═══════════════════ */
         .hero {
-            background: linear-gradient(135deg, #2c3e50, #e74c3c);
+            background: linear-gradient(135deg, #1a1a2e 0%, #2c3e50 50%, #e74c3c 100%);
             color: #fff;
             padding: 2.5rem 1.5rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .hero h1 { font-size: 1.6rem; font-weight: 700; }
-        .hero p { margin-top: 0.4rem; opacity: 0.85; font-size: 0.95rem; }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            animation: heroGlow 8s ease-in-out infinite;
+        }
+        @keyframes heroGlow {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(5%, 5%) rotate(3deg); }
+        }
+        .hero h1 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+        }
+        .hero h1 span { color: #ffd700; }
+        .hero p {
+            margin-top: 0.4rem;
+            opacity: 0.85;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
+        }
         .hero .stats {
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin-top: 1.2rem;
-            font-size: 0.85rem;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
         .hero .stats div {
-            background: rgba(255,255,255,0.12);
-            padding: 0.4rem 1.2rem;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 0.45rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.08);
         }
-        .hero .stats div strong { font-size: 1rem; }
+        .hero .stats div strong { font-size: 0.95rem; }
 
-        /* === CONTAINER === */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 1.5rem 1rem;
-        }
+        /* ═══════════════════ CONTAINER ═══════════════════ */
+        .container { max-width: 1150px; margin: 0 auto; padding: 1.5rem 1rem; }
 
-        /* === SORT BAR === */
+        /* ═══════════════════ LAYOUT ═══════════════════ */
+        .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+        .layout-main { flex: 1; min-width: 0; }
+
+        /* ═══════════════════ SORT BAR ═══════════════════ */
         .sort-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             background: #fff;
-            border: 1px solid #dce1e8;
-            border-radius: 6px;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
             padding: 0.6rem 1rem;
             margin-bottom: 1.2rem;
             flex-wrap: wrap;
             gap: 0.5rem;
         }
-        .sort-bar .total { font-size: 0.85rem; color: #555; }
-        .sort-bar .total strong { color: #333; }
-        .sort-bar .sort-options {
+        .sort-bar .total { font-size: 0.82rem; color: #555; }
+        .sort-bar .total strong { color: #2c3e50; }
+        .sort-bar .actions {
             display: flex;
             gap: 0.5rem;
             align-items: center;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
         }
-        .sort-bar .sort-options span { color: #888; }
-        .sort-bar .sort-options a {
+        .sort-bar .actions span { color: #888; }
+        .sort-bar .actions a {
             color: #555;
             text-decoration: none;
-            padding: 0.2rem 0.6rem;
+            padding: 0.2rem 0.7rem;
             border-radius: 4px;
+            transition: all 0.1s;
         }
-        .sort-bar .sort-options a:hover { background: #f0f2f5; }
-        .sort-bar .sort-options a.active {
+        .sort-bar .actions a:hover { background: #f0f2f5; }
+        .sort-bar .actions a.active {
             background: #e74c3c;
             color: #fff;
         }
 
-        /* === CATEGORY === */
+        /* ═══════════════════ CATEGORY ═══════════════════ */
         .category { margin-bottom: 1.8rem; }
         .category-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.6rem;
             padding-bottom: 0.4rem;
             border-bottom: 2px solid #e74c3c;
         }
@@ -184,142 +258,126 @@
             font-weight: 700;
             color: #2c3e50;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
         .category-header .count {
             background: #e8ecf0;
-            padding: 0.2rem 0.8rem;
+            padding: 0.15rem 0.7rem;
             border-radius: 10px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #555;
         }
 
-        /* === GRID === */
-        .grid { display: flex; flex-direction: column; gap: 0.5rem; }
+        /* ═══════════════════ FILE LIST ═══════════════════ */
+        .file-list { display: flex; flex-direction: column; gap: 0.5rem; }
 
-        /* === CARD (table-like) === */
-        .card {
+        .file-item {
             background: #fff;
             border: 1px solid #e8ecf0;
-            border-radius: 6px;
-            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
             display: flex;
             align-items: center;
             gap: 1rem;
             cursor: pointer;
             transition: all 0.12s ease;
         }
-        .card:hover {
+        .file-item:hover {
             border-color: #e74c3c;
-            box-shadow: 0 2px 8px rgba(231,76,60,0.08);
+            box-shadow: 0 3px 12px rgba(231,76,60,0.08);
+            transform: translateY(-1px);
         }
-        .card-icon {
+        .file-icon {
             font-size: 1.6rem;
-            min-width: 36px;
+            min-width: 40px;
             text-align: center;
+            line-height: 1;
         }
-        .card-body { flex: 1; min-width: 0; }
-        .card-body .name {
+        .file-body { flex: 1; min-width: 0; }
+        .file-body .fname {
             font-weight: 600;
             font-size: 0.9rem;
             color: #2c3e50;
         }
-        .card-body .name small {
+        .file-body .fname small {
             font-weight: 400;
-            color: #888;
-            font-size: 0.75rem;
+            color: #999;
+            font-size: 0.7rem;
+            margin-left: 0.3rem;
         }
-        .card-body .meta {
-            font-size: 0.75rem;
+        .file-body .fmeta {
+            font-size: 0.72rem;
             color: #888;
             margin-top: 0.15rem;
         }
-        .card-body .meta span { margin-right: 1rem; }
-        .card-body .meta .rating { color: #f39c12; }
+        .file-body .fmeta span { margin-right: 0.8rem; }
+        .file-body .fmeta .rating { color: #f39c12; }
+        .file-body .fmeta .green { color: #27ae60; }
 
-        .card-action {
+        .file-action {
             background: #e74c3c;
             color: #fff;
             border: none;
             padding: 0.4rem 1.2rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             white-space: nowrap;
-            transition: background 0.12s;
+            transition: all 0.12s;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
-        .card-action:hover { background: #c0392b; }
+        .file-action:hover { background: #c0392b; transform: scale(1.02); }
 
-        /* === NO FILES === */
-        .no-files {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #888;
-        }
-        .no-files p { font-size: 1rem; }
-
-        /* === FOOTER === */
-        .footer {
-            background: #2c3e50;
-            color: #b0b0c0;
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 0.8rem;
-            margin-top: 2rem;
-        }
-        .footer a { color: #e74c3c; text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
-
-        /* === SIDEBAR AD (fake) === */
-        .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
-        .layout-main { flex: 1; min-width: 0; }
+        /* ═══════════════════ SIDEBAR ═══════════════════ */
         .sidebar {
-            width: 260px;
+            width: 280px;
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .sidebar .widget {
+            background: #fff;
+            border: 1px solid #e8ecf0;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .sidebar .widget h3 {
+            font-size: 0.85rem;
+            color: #2c3e50;
+            margin-bottom: 0.6rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid #e74c3c;
+            font-weight: 700;
         }
         .sidebar .ad-box {
             background: #fff;
             border: 1px solid #e8ecf0;
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 1rem;
             text-align: center;
-            margin-bottom: 1rem;
         }
         .sidebar .ad-box .ad-label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #bbb;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .sidebar .ad-box .ad-placeholder {
-            background: #f0f2f5;
-            height: 120px;
+        .sidebar .ad-box .ad-content {
+            background: linear-gradient(135deg, #f0f2f5, #e8ecf0);
+            height: 160px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: 0.5rem;
-            border-radius: 4px;
-            color: #ccc;
+            border-radius: 6px;
+            color: #bbb;
             font-size: 0.8rem;
         }
-        .sidebar .popular-box {
-            background: #fff;
-            border: 1px solid #e8ecf0;
-            border-radius: 6px;
-            padding: 1rem;
-        }
-        .sidebar .popular-box h3 {
-            font-size: 0.85rem;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.3rem;
-            border-bottom: 2px solid #e74c3c;
-        }
-        .sidebar .popular-box .popular-item {
+        .sidebar .trending-item {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -327,34 +385,113 @@
             border-bottom: 1px solid #f0f2f5;
             font-size: 0.75rem;
             cursor: pointer;
+            transition: color 0.1s;
         }
-        .sidebar .popular-box .popular-item:hover { color: #e74c3c; }
-        .sidebar .popular-box .popular-item:last-child { border-bottom: none; }
+        .sidebar .trending-item:last-child { border-bottom: none; }
+        .sidebar .trending-item:hover { color: #e74c3c; }
+        .sidebar .trending-item .num {
+            color: #ccc;
+            font-weight: 700;
+            font-size: 0.8rem;
+            min-width: 18px;
+        }
 
-        @media (max-width: 800px) {
+        /* ═══════════════════ REVIEWS ═══════════════════ */
+        .reviews-section {
+            background: #fff;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-top: 1.5rem;
+        }
+        .reviews-section h3 {
+            font-size: 0.95rem;
+            color: #2c3e50;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #e74c3c;
+        }
+        .review-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 0.82rem;
+        }
+        .review-item:last-child { border-bottom: none; }
+        .review-item .author { font-weight: 600; color: #2c3e50; }
+        .review-item .date { font-size: 0.68rem; color: #aaa; margin-left: 0.4rem; }
+        .review-item .stars { color: #f39c12; font-size: 0.72rem; }
+        .review-item .text { margin-top: 0.15rem; color: #555; }
+
+        /* ═══════════════════ FOOTER ═══════════════════ */
+        .footer {
+            background: #1a1a2e;
+            color: #8899aa;
+            text-align: center;
+            padding: 1.8rem;
+            font-size: 0.78rem;
+            margin-top: 2rem;
+        }
+        .footer a { color: #e74c3c; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .footer .badges {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 0.8rem;
+            font-size: 0.7rem;
+        }
+        .footer .badges span {
+            background: rgba(255,255,255,0.06);
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+        }
+
+        /* ═══════════════════ EMPTY ═══════════════════ */
+        .no-files {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: #888;
+        }
+
+        /* ═══════════════════ RESPONSIVE ═══════════════════ */
+        @media (max-width: 900px) {
             .sidebar { display: none; }
-            .header { flex-direction: column; }
+        }
+        @media (max-width: 600px) {
+            .header { justify-content: center; }
             .header .search-box { max-width: 100%; }
+            .header .nav-links { gap: 0.6rem; }
             .sort-bar { flex-direction: column; align-items: flex-start; }
+            .file-item { flex-wrap: wrap; }
+            .file-action { width: 100%; text-align: center; }
+            .cookie-bar { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 <body>
 
+<div class="cookie-bar">
+    <span>🍪</span> This site uses cookies to enhance your experience. By continuing you agree to our <a href="#">Privacy Policy</a>.
+    <button onclick="this.parentElement.style.display='none'">Accept All</button>
+</div>
+
 <div class="top-ad">
-    🔒 DOWNLOAD PROTECTED BY MCAFEE SECURE — ALL FILES SCANNED DAILY <span>|</span> ⚡ 1.2M DOWNLOADS TODAY
+    🛡️ PROTECTED BY NORTON SECURE — ALL FILES SCANNED DAILY <span>|</span> ⚡ 1.4M DOWNLOADS TODAY <span>|</span> ⭐ 4.9/5.0
 </div>
 
 <div class="header">
     <div class="logo">
-        ⬇️ FilesLab <small>v3.2.1</small>
+        ⬇️ Lab<span>Files</span> <small>v4.1.2</small>
     </div>
     <div class="search-box">
-        <input type="text" placeholder="Search 1,247 files..." />
+        <input type="text" placeholder="Search {{ total_files }} files, software, games..." />
         <button>🔍</button>
     </div>
-    <div class="right-links">
-        <a href="#">Sign In</a>
+    <div class="nav-links">
+        <a href="#">Browse</a>
+        <a href="#">Categories</a>
+        <a href="#">New</a>
+        <a href="#">Popular</a>
         <a href="#" class="upload-btn">+ Upload</a>
     </div>
 </div>
@@ -364,13 +501,14 @@
 </div>
 
 <div class="hero">
-    <h1>Download Free Software, Games, Drivers &amp; Tools</h1>
-    <p>Trusted by 2.4M users worldwide. All files verified and malware-free.</p>
+    <h1>Download Free <span>Software, Games &amp; Tools</span></h1>
+    <p>Trusted by 3.2M users worldwide. All files verified — zero malware guaranteed.</p>
     <div class="stats">
         <div>📦 <strong>{{ total_files }}</strong> files</div>
-        <div>⬇️ <strong>847K</strong> downloads today</div>
+        <div>⬇️ <strong>{{ total_downloads }}</strong> total downloads</div>
         <div>⭐ <strong>4.8</strong> / 5.0</div>
         <div>🔒 <strong>100%</strong> safe</div>
+        <div>🌍 <strong>127</strong> countries</div>
     </div>
 </div>
 
@@ -381,11 +519,12 @@
 <div class="layout-main">
 
     <div class="sort-bar">
-        <div class="total">Showing <strong>{{ total_files }}</strong> files</div>
-        <div class="sort-options">
+        <div class="total">Showing <strong>{{ total_files }}</strong> files — <strong>{{ total_downloads }}</strong> total downloads</div>
+        <div class="actions">
             <span>Sort:</span>
             <a href="#" class="active">Newest</a>
-            <a href="#">Popular</a>
+            <a href="#">Most Downloaded</a>
+            <a href="#">Top Rated</a>
             <a href="#">Name</a>
             <a href="#">Size</a>
         </div>
@@ -393,7 +532,7 @@
 
     {% if total_files == 0 %}
     <div class="no-files">
-        <p>📭 No files uploaded yet. Check back soon!</p>
+        <p>📭 No files available yet. Check back soon!</p>
     </div>
     {% endif %}
 
@@ -403,49 +542,74 @@
             <h2>📁 {{ category }}</h2>
             <span class="count">{{ files|length }} files</span>
         </div>
-        <div class="grid">
+        <div class="file-list">
             {% for file in files %}
-            <div class="card" onclick="location.href='/download/{{ file.filename }}'">
-                <div class="card-icon">{{ file.icon }}</div>
-                <div class="card-body">
-                    <div class="name">
+            <div class="file-item" onclick="location.href='/download/{{ file.filename }}'">
+                <div class="file-icon">{{ file.icon }}</div>
+                <div class="file-body">
+                    <div class="fname">
                         {{ file.name }}{{ file.ext }}
-                        <small>v{{ range(1, 20)|random }}.{{ range(0, 9)|random }}.{{ range(0, 99)|random }}</small>
+                        <small>v{{ file.version }}</small>
                     </div>
-                    <div class="meta">
+                    <div class="fmeta">
                         <span>💾 {{ file.size_mb }} MB</span>
                         <span>📄 {{ file.ext }}</span>
-                        <span>⬇️ {{ range(1000, 50000)|random }} downloads</span>
-                        <span class="rating">⭐ {{ range(35, 50)|random / 10 }}</span>
-                        <span>{{ range(1, 28)|random }} days ago</span>
+                        <span>⬇️ {{ file.downloads }} dowloads</span>
+                        <span class="rating">⭐ {{ file.rating }} ({{ file.reviews }})</span>
+                        <span class="green">{{ file.days_ago }} days ago</span>
                     </div>
                 </div>
-                <a href="/download/{{ file.filename }}" class="card-action">Download</a>
+                <a href="/download/{{ file.filename }}" class="file-action">Download</a>
             </div>
             {% endfor %}
         </div>
     </div>
     {% endfor %}
 
+    <div class="reviews-section">
+        <h3>💬 Latest User Reviews</h3>
+        {% for review in reviews %}
+        <div class="review-item">
+            <span class="author">{{ review.author }}</span>
+            <span class="date">{{ review.days }} days ago</span>
+            <div class="stars">{% for _ in range(review.stars) %}⭐{% endfor %}</div>
+            <div class="text">{{ review.text }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
 </div>
 
 <div class="sidebar">
     <div class="ad-box">
         <div class="ad-label">— Sponsored —</div>
-        <div class="ad-placeholder">📢 Ad Placeholder</div>
+        <div class="ad-content">📢 Download Boost<br/><span style="font-size:0.7rem;color:#aaa;">Get 2x faster downloads</span></div>
     </div>
-    <div class="popular-box">
-        <h3>🔥 Trending Now</h3>
-        <div class="popular-item">🎮 GameBoost Pro v3.2</div>
-        <div class="popular-item">🔓 CrackTool 2026</div>
-        <div class="popular-item">🌐 VPN Unlimited Free</div>
-        <div class="popular-item">⚙️ DriverPack Solution</div>
-        <div class="popular-item">🎬 Adobe Premiere 2025</div>
-        <div class="popular-item">🛡️ AntiVirus Pro 2026</div>
+
+    <div class="widget">
+        <h3>🔥 Trending Downloads</h3>
+        {% for i in range(6) %}
+        <div class="trending-item">
+            <span class="num">{{ "#%02d"|format(i+1) }}</span>
+            <span>{% set icons = ['🎮','🔓','🌐','⚙️','🎬','🛡️'] %}{{ icons[i % icons|length] }}</span>
+            <span>{% set names = ['GameBoost Pro','CrackTool 2026','VPN Unlimited','DriverPack','Adobe Premiere','AntiVirus Pro'] %}{{ names[i % names|length] }}</span>
+        </div>
+        {% endfor %}
     </div>
-    <div class="ad-box" style="margin-top: 1rem;">
+
+    <div class="widget">
+        <h3>📊 Stats</h3>
+        <div style="font-size:0.75rem;color:#555;">
+            <div style="display:flex;justify-content:space-between;padding:0.2rem 0;"><span>Files</span><strong>{{ total_files }}</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:0.2rem 0;"><span>Total Downloads</span><strong>{{ total_downloads }}</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:0.2rem 0;"><span>Users Online</span><strong>847</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:0.2rem 0;"><span>Uptime</span><strong style="color:#27ae60;">99.97%</strong></div>
+        </div>
+    </div>
+
+    <div class="ad-box">
         <div class="ad-label">— Recommended —</div>
-        <div class="ad-placeholder" style="height: 200px;">📢 Ad Banner</div>
+        <div class="ad-content" style="height:200px;">📢 Ad Banner<br/><span style="font-size:0.7rem;color:#aaa;">Your ad here</span></div>
     </div>
 </div>
 
@@ -454,8 +618,14 @@
 </div>
 
 <div class="footer">
-    <p>FilesLab &copy; 2026 — All files are hosted on third-party servers. <a href="#">DMCA</a> | <a href="#">Privacy</a> | <a href="#">Terms</a></p>
-    <p style="margin-top: 0.3rem; opacity: 0.6;">Protected by Cloudflare &bull; SSL Encrypted &bull; Verified by Norton</p>
+    <p>LabFiles &copy; 2026 — All files are user-uploaded. <a href="#">DMCA Policy</a> | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Contact</a></p>
+    <div class="badges">
+        <span>🔒 SSL Encrypted</span>
+        <span>🛡️ Norton Verified</span>
+        <span>☁️ Cloudflare Protected</span>
+        <span>✓ DMCA Compliant</span>
+    </div>
+    <p style="margin-top:0.5rem;opacity:0.5;">1,247 files indexed • 3.2M users • 127 countries</p>
 </div>
 
 <script>
