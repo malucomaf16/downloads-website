@@ -25,7 +25,6 @@
         .file-card h1 { font-size: 1.6rem; color: #f0f6fc; word-break: break-word; }
         .file-card .meta { color: #8b949e; font-size: 0.95rem; margin-top: 0.5rem; }
         .file-card .meta span { margin: 0 0.8rem; }
-        .file-card p { color: #8b949e; font-size: 1rem; margin: 1.5rem 0; line-height: 1.6; }
         
         .download-btn {
             display: block; width: 100%; padding: 1.2rem;
@@ -58,14 +57,12 @@
 
 <div class="container">
     <div class="file-card">
-        <div class="file-icon">{{ {'exe':'⚙️','msi':'⚙️','dll':'🔧','zip':'📦','rar':'📦','7z':'📦','jpg':'🖼️','jpeg':'🖼️','png':'🖼️','gif':'🖼️','pdf':'📄','txt':'📄','mp3':'🎵','mp4':'🎬','iso':'💿','apk':'📱','dmg':'💻','py':'🐍','html':'🌐'}.get(file.ext.lower().replace('.',''), '📁') }}</div>
+        <div class="file-icon">{{ file.icon }}</div>
         <h1>{{ file.name }}{{ file.ext }}</h1>
         <div class="meta">
             <span>💾 {{ file.size_mb }} MB</span>
             <span>📄 {{ file.ext }}</span>
-            <span>🔗 GitHub</span>
         </div>
-        <p>This download is hosted on GitHub. Click the button below to start your free download instantly.</p>
         
         <a href="{{ file.raw_url }}" class="download-btn" target="_blank" rel="noopener">
             ⬇️ Download {{ file.name }}{{ file.ext }}
