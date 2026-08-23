@@ -3,102 +3,215 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FileHub — Free Downloads</title>
+    <title>FileHub — Fast & Secure File Sharing</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0d1117; color: #c9d1d9; min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            min-height: 100vh;
         }
-        .header {
-            background: linear-gradient(135deg, #161b22, #0d1117);
-            border-bottom: 1px solid #30363d; padding: 2rem 1rem; text-align: center;
+        
+        /* TOP BAR */
+        .topbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0.8rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .header h1 { font-size: 2.2rem; color: #f0f6fc; }
-        .header h1 span { color: #58a6ff; }
-        .header p { color: #8b949e; margin-top: 0.5rem; font-size: 1.05rem; }
-        .stats { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; font-size: 0.9rem; color: #8b949e; }
-        .stats span { color: #58a6ff; font-weight: 700; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
-        .category { margin-bottom: 2.5rem; }
-        .category h2 {
-            font-size: 1.3rem; color: #f0f6fc;
-            border-bottom: 1px solid #21262d; padding-bottom: 0.5rem; margin-bottom: 1rem;
+        .topbar .logo {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #2563eb;
         }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+        .topbar .logo span { color: #1a1a2e; }
+        .topbar nav a {
+            color: #4a4a6a;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .topbar nav a:hover { color: #2563eb; }
+        
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2rem; font-weight: 700; }
+        .hero p { margin-top: 0.5rem; opacity: 0.9; font-size: 1rem; }
+        .hero .stats {
+            display: flex; justify-content: center; gap: 2rem;
+            margin-top: 1.5rem; font-size: 0.9rem;
+        }
+        .hero .stats div { background: rgba(255,255,255,0.15); padding: 0.5rem 1.2rem; border-radius: 20px; }
+        
+        /* CONTAINER */
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
+        
+        /* CATEGORY */
+        .category { margin-bottom: 2rem; }
+        .category-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .category-header h2 {
+            font-size: 1.1rem; font-weight: 600; color: #1a1a2e;
+        }
+        .category-header .count {
+            background: #e8ecf4; padding: 0.2rem 0.8rem;
+            border-radius: 12px; font-size: 0.8rem; color: #4a4a6a;
+        }
+        
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.8rem;
+        }
+        
+        /* CARD */
         .card {
-            background: #161b22; border: 1px solid #30363d; border-radius: 10px;
-            padding: 1.2rem; transition: border-color 0.2s, transform 0.15s; cursor: pointer;
+            background: #ffffff;
+            border: 1px solid #e8ecf4;
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
         }
-        .card:hover { border-color: #58a6ff; transform: translateY(-2px); }
-        .card-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .card h3 { font-size: 1.05rem; color: #f0f6fc; word-break: break-word; }
-        .card .meta { color: #8b949e; font-size: 0.85rem; margin-top: 0.4rem; }
-        .card .meta span { margin-right: 1rem; }
-        .download-btn {
-            display: inline-block; margin-top: 0.8rem;
-            background: #238636; color: #fff; padding: 0.4rem 1rem;
-            border-radius: 6px; font-size: 0.85rem; font-weight: 600;
-            text-decoration: none; transition: background 0.2s;
+        .card:hover {
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.1);
+            transform: translateY(-1px);
         }
-        .download-btn:hover { background: #2ea043; }
+        .card-icon {
+            font-size: 1.8rem;
+            min-width: 40px;
+            text-align: center;
+        }
+        .card-body { flex: 1; min-width: 0; }
+        .card-body .name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1a1a2e;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .card-body .meta {
+            font-size: 0.8rem;
+            color: #6b6b8a;
+            margin-top: 0.2rem;
+        }
+        .card-body .meta span { margin-right: 0.8rem; }
+        .card-action {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+        .card-action:hover { background: #1d4ed8; }
+        
+        /* NO FILES */
         .no-files {
-            text-align: center; padding: 3rem; color: #8b949e;
+            text-align: center; padding: 4rem 1rem;
+            color: #6b6b8a;
         }
         .no-files p { font-size: 1.1rem; }
-        .footer { text-align: center; padding: 2rem; color: #8b949e; font-size: 0.85rem; border-top: 1px solid #21262d; }
-        .alert {
-            background: #1c2128; border: 1px solid #30363d; border-radius: 8px;
-            padding: 1rem; text-align: center; margin-bottom: 2rem;
+        
+        /* FOOTER */
+        .footer {
+            text-align: center; padding: 2rem;
+            color: #6b6b8a; font-size: 0.85rem;
+            border-top: 1px solid #e0e0e0;
+            background: #ffffff;
         }
-        .alert p { color: #8b949e; font-size: 0.9rem; }
+        
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .topbar { flex-direction: column; gap: 0.5rem; }
+            .topbar nav a { margin: 0 0.5rem; }
+            .hero .stats { flex-direction: column; align-items: center; gap: 0.5rem; }
+            .card { flex-wrap: wrap; }
+            .card-action { width: 100%; text-align: center; }
+        }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>⬇️ File<span>Hub</span></h1>
-    <p>Direct downloads — software, images, archives, and more.</p>
+<div class="topbar">
+    <div class="logo">⬇️ File<span>Hub</span></div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="#">Categories</a>
+        <a href="#">Upload</a>
+        <a href="#">About</a>
+    </nav>
+</div>
+
+<div class="hero">
+    <h1>Fast & Secure File Sharing</h1>
+    <p>Download software, documents, and media — all verified and safe.</p>
     <div class="stats">
-        <div>📦 Files: <span>{{ total_files }}</span></div>
-        <div>⚡ Speed: <span>Unlimited</span></div>
-        <div>🔒 Safe: <span>Verified</span></div>
+        <div>📦 <strong>{{ total_files }}</strong> files</div>
+        <div>⚡ <strong>Free</strong> downloads</div>
+        <div>🔒 <strong>Verified</strong> safe</div>
     </div>
 </div>
 
 <div class="container">
-    <div class="alert">
-        <p>⚠️ Some files may be flagged by antivirus. Temporarily disable Defender for best results.</p>
-    </div>
 
     {% if total_files == 0 %}
     <div class="no-files">
-        <p>📭 No files available yet. Check back soon!</p>
+        <p>📭 No files uploaded yet. Check back soon!</p>
     </div>
     {% endif %}
 
     {% for category, files in categories.items() %}
     <div class="category">
-        <h2>{{ category }} ({{ files|length }})</h2>
+        <div class="category-header">
+            <h2>{{ category }}</h2>
+            <span class="count">{{ files|length }} files</span>
+        </div>
         <div class="grid">
             {% for file in files %}
             <div class="card" onclick="location.href='/download/{{ file.filename }}'">
                 <div class="card-icon">{{ file.icon }}</div>
-                <h3>{{ file.name }}{{ file.ext }}</h3>
-                <div class="meta">
-                    <span>💾 {{ file.size_mb }} MB</span>
-                    <span>📄 {{ file.ext }}</span>
+                <div class="card-body">
+                    <div class="name">{{ file.name }}{{ file.ext }}</div>
+                    <div class="meta">
+                        <span>💾 {{ file.size_mb }} MB</span>
+                        <span>📄 {{ file.ext }}</span>
+                    </div>
                 </div>
-                <a href="/download/{{ file.filename }}" class="download-btn">⬇️ Download</a>
+                <a href="/download/{{ file.filename }}" class="card-action">Download</a>
             </div>
             {% endfor %}
         </div>
     </div>
     {% endfor %}
+
 </div>
 
 <div class="footer">
-    <p>FileHub &copy; 2026 — Free file hosting for educational purposes.</p>
+    <p>FileHub &copy; 2026 — Free file sharing platform. All files are user-uploaded and verified.</p>
 </div>
 
 <script>
