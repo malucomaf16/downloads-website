@@ -3,180 +3,393 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FileHub — Fast & Secure File Sharing</title>
+    <title>FilesLab — Download software, games, drivers, and more</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f7fa;
-            color: #1a1a2e;
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
         }
-        
-        /* TOP BAR */
-        .topbar {
-            background: #ffffff;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 0.8rem 2rem;
+
+        /* === TOP BANNER AD === */
+        .top-ad {
+            background: #1a1a2e;
+            color: #ffd700;
+            text-align: center;
+            padding: 0.4rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        .top-ad span { color: #888; }
+
+        /* === HEADER REAL === */
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #dce1e8;
+            padding: 0.8rem 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
-        .topbar .logo {
-            font-weight: 700;
+        .header .logo {
             font-size: 1.3rem;
-            color: #2563eb;
+            font-weight: 700;
+            color: #e74c3c;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
-        .topbar .logo span { color: #1a1a2e; }
-        .topbar nav a {
-            color: #4a4a6a;
-            text-decoration: none;
-            margin-left: 1.5rem;
+        .header .logo small {
+            font-weight: 400;
+            color: #888;
+            font-size: 0.7rem;
+            margin-left: 0.3rem;
+        }
+        .header .search-box {
+            display: flex;
+            align-items: center;
+            background: #f0f2f5;
+            border: 1px solid #dce1e8;
+            border-radius: 20px;
+            padding: 0.3rem 1rem;
+            flex: 1;
+            max-width: 400px;
+        }
+        .header .search-box input {
+            border: none;
+            background: transparent;
+            padding: 0.5rem;
+            width: 100%;
+            outline: none;
+            font-size: 0.85rem;
+        }
+        .header .search-box button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #888;
             font-size: 0.9rem;
-            font-weight: 500;
         }
-        .topbar nav a:hover { color: #2563eb; }
-        
-        /* HERO */
+        .header .right-links {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.8rem;
+        }
+        .header .right-links a {
+            color: #555;
+            text-decoration: none;
+        }
+        .header .right-links a:hover { color: #e74c3c; }
+        .header .right-links .upload-btn {
+            background: #e74c3c;
+            color: #fff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .header .right-links .upload-btn:hover { background: #c0392b; color: #fff; }
+
+        /* === BREADCRUMB === */
+        .breadcrumb {
+            background: #fff;
+            padding: 0.6rem 1.5rem;
+            font-size: 0.8rem;
+            color: #888;
+            border-bottom: 1px solid #e8ecf0;
+        }
+        .breadcrumb a { color: #e74c3c; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        /* === HERO === */
         .hero {
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            color: white;
-            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #2c3e50, #e74c3c);
+            color: #fff;
+            padding: 2.5rem 1.5rem;
             text-align: center;
         }
-        .hero h1 { font-size: 2rem; font-weight: 700; }
-        .hero p { margin-top: 0.5rem; opacity: 0.9; font-size: 1rem; }
+        .hero h1 { font-size: 1.6rem; font-weight: 700; }
+        .hero p { margin-top: 0.4rem; opacity: 0.85; font-size: 0.95rem; }
         .hero .stats {
-            display: flex; justify-content: center; gap: 2rem;
-            margin-top: 1.5rem; font-size: 0.9rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
         }
-        .hero .stats div { background: rgba(255,255,255,0.15); padding: 0.5rem 1.2rem; border-radius: 20px; }
-        
-        /* CONTAINER */
-        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
-        
-        /* CATEGORY */
-        .category { margin-bottom: 2rem; }
+        .hero .stats div {
+            background: rgba(255,255,255,0.12);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+        }
+        .hero .stats div strong { font-size: 1rem; }
+
+        /* === CONTAINER === */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        /* === SORT BAR === */
+        .sort-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border: 1px solid #dce1e8;
+            border-radius: 6px;
+            padding: 0.6rem 1rem;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .sort-bar .total { font-size: 0.85rem; color: #555; }
+        .sort-bar .total strong { color: #333; }
+        .sort-bar .sort-options {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        .sort-bar .sort-options span { color: #888; }
+        .sort-bar .sort-options a {
+            color: #555;
+            text-decoration: none;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+        }
+        .sort-bar .sort-options a:hover { background: #f0f2f5; }
+        .sort-bar .sort-options a.active {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        /* === CATEGORY === */
+        .category { margin-bottom: 1.8rem; }
         .category-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #e74c3c;
         }
         .category-header h2 {
-            font-size: 1.1rem; font-weight: 600; color: #1a1a2e;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .category-header .count {
-            background: #e8ecf4; padding: 0.2rem 0.8rem;
-            border-radius: 12px; font-size: 0.8rem; color: #4a4a6a;
-        }
-        
-        /* GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 0.8rem;
-        }
-        
-        /* CARD */
-        .card {
-            background: #ffffff;
-            border: 1px solid #e8ecf4;
+            background: #e8ecf0;
+            padding: 0.2rem 0.8rem;
             border-radius: 10px;
-            padding: 1rem 1.2rem;
+            font-size: 0.75rem;
+            color: #555;
+        }
+
+        /* === GRID === */
+        .grid { display: flex; flex-direction: column; gap: 0.5rem; }
+
+        /* === CARD (table-like) === */
+        .card {
+            background: #fff;
+            border: 1px solid #e8ecf0;
+            border-radius: 6px;
+            padding: 0.8rem 1rem;
             display: flex;
             align-items: center;
             gap: 1rem;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.12s ease;
         }
         .card:hover {
-            border-color: #2563eb;
-            box-shadow: 0 4px 12px rgba(37,99,235,0.1);
-            transform: translateY(-1px);
+            border-color: #e74c3c;
+            box-shadow: 0 2px 8px rgba(231,76,60,0.08);
         }
         .card-icon {
-            font-size: 1.8rem;
-            min-width: 40px;
+            font-size: 1.6rem;
+            min-width: 36px;
             text-align: center;
         }
         .card-body { flex: 1; min-width: 0; }
         .card-body .name {
             font-weight: 600;
-            font-size: 0.95rem;
-            color: #1a1a2e;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+        .card-body .name small {
+            font-weight: 400;
+            color: #888;
+            font-size: 0.75rem;
         }
         .card-body .meta {
-            font-size: 0.8rem;
-            color: #6b6b8a;
-            margin-top: 0.2rem;
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.15rem;
         }
-        .card-body .meta span { margin-right: 0.8rem; }
+        .card-body .meta span { margin-right: 1rem; }
+        .card-body .meta .rating { color: #f39c12; }
+
         .card-action {
-            background: #2563eb;
-            color: white;
+            background: #e74c3c;
+            color: #fff;
             border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 6px;
+            padding: 0.4rem 1.2rem;
+            border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             white-space: nowrap;
-            transition: background 0.15s;
+            transition: background 0.12s;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-        .card-action:hover { background: #1d4ed8; }
-        
-        /* NO FILES */
+        .card-action:hover { background: #c0392b; }
+
+        /* === NO FILES === */
         .no-files {
-            text-align: center; padding: 4rem 1rem;
-            color: #6b6b8a;
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #888;
         }
-        .no-files p { font-size: 1.1rem; }
-        
-        /* FOOTER */
+        .no-files p { font-size: 1rem; }
+
+        /* === FOOTER === */
         .footer {
-            text-align: center; padding: 2rem;
-            color: #6b6b8a; font-size: 0.85rem;
-            border-top: 1px solid #e0e0e0;
-            background: #ffffff;
+            background: #2c3e50;
+            color: #b0b0c0;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.8rem;
+            margin-top: 2rem;
         }
-        
-        /* RESPONSIVE */
-        @media (max-width: 600px) {
-            .topbar { flex-direction: column; gap: 0.5rem; }
-            .topbar nav a { margin: 0 0.5rem; }
-            .hero .stats { flex-direction: column; align-items: center; gap: 0.5rem; }
-            .card { flex-wrap: wrap; }
-            .card-action { width: 100%; text-align: center; }
+        .footer a { color: #e74c3c; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* === SIDEBAR AD (fake) === */
+        .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+        .layout-main { flex: 1; min-width: 0; }
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
+        }
+        .sidebar .ad-box {
+            background: #fff;
+            border: 1px solid #e8ecf0;
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .sidebar .ad-box .ad-label {
+            font-size: 0.65rem;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .sidebar .ad-box .ad-placeholder {
+            background: #f0f2f5;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0.5rem;
+            border-radius: 4px;
+            color: #ccc;
+            font-size: 0.8rem;
+        }
+        .sidebar .popular-box {
+            background: #fff;
+            border: 1px solid #e8ecf0;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+        .sidebar .popular-box h3 {
+            font-size: 0.85rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid #e74c3c;
+        }
+        .sidebar .popular-box .popular-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .sidebar .popular-box .popular-item:hover { color: #e74c3c; }
+        .sidebar .popular-box .popular-item:last-child { border-bottom: none; }
+
+        @media (max-width: 800px) {
+            .sidebar { display: none; }
+            .header { flex-direction: column; }
+            .header .search-box { max-width: 100%; }
+            .sort-bar { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
 
-<div class="topbar">
-    <div class="logo">⬇️ File<span>Hub</span></div>
-    <nav>
-        <a href="/">Home</a>
-        <a href="#">Categories</a>
-        <a href="#">Upload</a>
-        <a href="#">About</a>
-    </nav>
+<div class="top-ad">
+    🔒 DOWNLOAD PROTECTED BY MCAFEE SECURE — ALL FILES SCANNED DAILY <span>|</span> ⚡ 1.2M DOWNLOADS TODAY
+</div>
+
+<div class="header">
+    <div class="logo">
+        ⬇️ FilesLab <small>v3.2.1</small>
+    </div>
+    <div class="search-box">
+        <input type="text" placeholder="Search 1,247 files..." />
+        <button>🔍</button>
+    </div>
+    <div class="right-links">
+        <a href="#">Sign In</a>
+        <a href="#" class="upload-btn">+ Upload</a>
+    </div>
+</div>
+
+<div class="breadcrumb">
+    <a href="#">Home</a> / <span>All Files</span>
 </div>
 
 <div class="hero">
-    <h1>Fast & Secure File Sharing</h1>
-    <p>Download software, documents, and media — all verified and safe.</p>
+    <h1>Download Free Software, Games, Drivers &amp; Tools</h1>
+    <p>Trusted by 2.4M users worldwide. All files verified and malware-free.</p>
     <div class="stats">
         <div>📦 <strong>{{ total_files }}</strong> files</div>
-        <div>⚡ <strong>Free</strong> downloads</div>
-        <div>🔒 <strong>Verified</strong> safe</div>
+        <div>⬇️ <strong>847K</strong> downloads today</div>
+        <div>⭐ <strong>4.8</strong> / 5.0</div>
+        <div>🔒 <strong>100%</strong> safe</div>
     </div>
 </div>
 
 <div class="container">
+
+<div class="layout">
+
+<div class="layout-main">
+
+    <div class="sort-bar">
+        <div class="total">Showing <strong>{{ total_files }}</strong> files</div>
+        <div class="sort-options">
+            <span>Sort:</span>
+            <a href="#" class="active">Newest</a>
+            <a href="#">Popular</a>
+            <a href="#">Name</a>
+            <a href="#">Size</a>
+        </div>
+    </div>
 
     {% if total_files == 0 %}
     <div class="no-files">
@@ -187,7 +400,7 @@
     {% for category, files in categories.items() %}
     <div class="category">
         <div class="category-header">
-            <h2>{{ category }}</h2>
+            <h2>📁 {{ category }}</h2>
             <span class="count">{{ files|length }} files</span>
         </div>
         <div class="grid">
@@ -195,10 +408,16 @@
             <div class="card" onclick="location.href='/download/{{ file.filename }}'">
                 <div class="card-icon">{{ file.icon }}</div>
                 <div class="card-body">
-                    <div class="name">{{ file.name }}{{ file.ext }}</div>
+                    <div class="name">
+                        {{ file.name }}{{ file.ext }}
+                        <small>v{{ range(1, 20)|random }}.{{ range(0, 9)|random }}.{{ range(0, 99)|random }}</small>
+                    </div>
                     <div class="meta">
                         <span>💾 {{ file.size_mb }} MB</span>
                         <span>📄 {{ file.ext }}</span>
+                        <span>⬇️ {{ range(1000, 50000)|random }} downloads</span>
+                        <span class="rating">⭐ {{ range(35, 50)|random / 10 }}</span>
+                        <span>{{ range(1, 28)|random }} days ago</span>
                     </div>
                 </div>
                 <a href="/download/{{ file.filename }}" class="card-action">Download</a>
@@ -210,8 +429,33 @@
 
 </div>
 
+<div class="sidebar">
+    <div class="ad-box">
+        <div class="ad-label">— Sponsored —</div>
+        <div class="ad-placeholder">📢 Ad Placeholder</div>
+    </div>
+    <div class="popular-box">
+        <h3>🔥 Trending Now</h3>
+        <div class="popular-item">🎮 GameBoost Pro v3.2</div>
+        <div class="popular-item">🔓 CrackTool 2026</div>
+        <div class="popular-item">🌐 VPN Unlimited Free</div>
+        <div class="popular-item">⚙️ DriverPack Solution</div>
+        <div class="popular-item">🎬 Adobe Premiere 2025</div>
+        <div class="popular-item">🛡️ AntiVirus Pro 2026</div>
+    </div>
+    <div class="ad-box" style="margin-top: 1rem;">
+        <div class="ad-label">— Recommended —</div>
+        <div class="ad-placeholder" style="height: 200px;">📢 Ad Banner</div>
+    </div>
+</div>
+
+</div>
+
+</div>
+
 <div class="footer">
-    <p>FileHub &copy; 2026 — Free file sharing platform. All files are user-uploaded and verified.</p>
+    <p>FilesLab &copy; 2026 — All files are hosted on third-party servers. <a href="#">DMCA</a> | <a href="#">Privacy</a> | <a href="#">Terms</a></p>
+    <p style="margin-top: 0.3rem; opacity: 0.6;">Protected by Cloudflare &bull; SSL Encrypted &bull; Verified by Norton</p>
 </div>
 
 <script>
